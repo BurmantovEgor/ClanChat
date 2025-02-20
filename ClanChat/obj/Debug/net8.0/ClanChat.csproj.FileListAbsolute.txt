@@ -6,6 +6,9 @@ C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\ClanChat.deps.jso
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\ClanChat.runtimeconfig.json
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\ClanChat.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\ClanChat.pdb
+C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\CSharpFunctionalExtensions.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\Humanizer.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\bin\Debug\net8.0\Microsoft.Build.Locator.dll
@@ -135,10 +138,10 @@ C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets\m
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ClanChat.props
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ClanChat.props
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\ClanChat.csproj.Up2Date
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\ClanChat.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\refint\ClanChat.dll
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\ClanChat.pdb
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\ClanChat.genruntimeconfig.cache
 C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\ref\ClanChat.dll
-C:\Users\burma\source\repos\ClanChat\ClanChat\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -23,9 +23,9 @@ namespace ClanChat.Data.DbConfigurations
         {
             if (!Clan.Any())
             {
-                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan1", CreatedTime = DateTime.UtcNow });
-                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan2", CreatedTime = DateTime.UtcNow });
-                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan3", CreatedTime = DateTime.UtcNow });
+                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan1", Description = "SeedClan #1", CreatedTime = DateTime.UtcNow });
+                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan2", Description = "SeedClan #2",  CreatedTime = DateTime.UtcNow });
+                Clan.Add(new ClanEntity { Id = Guid.NewGuid(), Name = "Clan3", Description = "SeedClan #3",  CreatedTime = DateTime.UtcNow });
                 SaveChanges();
             }
         }

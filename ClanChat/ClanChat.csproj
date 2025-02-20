@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
@@ -27,10 +28,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Core\Services\" />
     <Folder Include="Core\DTOs\" />
-    <Folder Include="Data\Repositories\" />
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>
