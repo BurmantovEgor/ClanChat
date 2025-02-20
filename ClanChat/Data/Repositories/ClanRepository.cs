@@ -20,6 +20,13 @@ namespace ClanChat.Data.Repositories
             return Result.Success();
         }
 
+        public async Task<Result<ClanEntity>> FindByIdAsync(Guid clanId)
+        {
+            var currClan = await dbContext.Clan.FirstOrDefaultAsync(x => x.Id == clanId);
+            if (currClan == null) return Result.Failure<ClanEntity>("Not found");
+            return Result.Success(currClan);
+        }
+
         public async Task<Result<List<ClanEntity>>> GetAll()
         {
             var clans = await dbContext.Clan.ToListAsync();

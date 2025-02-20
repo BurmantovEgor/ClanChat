@@ -1,12 +1,10 @@
-﻿namespace ClanChat.Data.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace ClanChat.Data.Entities
 {
-    public class UserEntity
+    public class UserEntity : IdentityUser<Guid>
     {
-        public Guid Id { get; set; }
-        public string UserName { get; set; }
         public Guid ClanId { get; set; }
-
-
         public ClanEntity Clan { get; set; }
     }
 }

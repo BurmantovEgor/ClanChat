@@ -1,5 +1,5 @@
 ﻿using ClanChat.Abstractions.Clan;
-using ClanChat.Core.DTOs;
+using ClanChat.Core.DTOs.Clan;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClanChat.Controllers

@@ -1,4 +1,4 @@
-﻿using ClanChat.Core.DTOs;
+﻿using ClanChat.Core.DTOs.Clan;
 using CSharpFunctionalExtensions;
 
 namespace ClanChat.Core.Models
@@ -16,7 +16,7 @@ namespace ClanChat.Core.Models
             CreatedAt = DateTime.UtcNow;
         }
 
-        public static Result<ClanModel> Create(DTOs.ClanDTO clanDTO)
+        public static Result<ClanModel> Create(ClanDTO clanDTO)
         {
             if (string.IsNullOrWhiteSpace(clanDTO.Name) || clanDTO.Name.Length > 100)
             {
