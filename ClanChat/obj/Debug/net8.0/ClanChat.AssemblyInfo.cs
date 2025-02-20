@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClanChat")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d34ec8d7101319e9a72655e588e7225594fb856b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClanChat")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClanChat")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
