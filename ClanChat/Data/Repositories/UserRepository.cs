@@ -3,23 +3,28 @@ using ClanChat.Core.DTOs.User;
 using ClanChat.Data.DbConfigurations;
 using ClanChat.Data.Entities;
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClanChat.Data.Repositories
 {
-    public class UserRepository(ClanChatDbContext dbContext) : IUserRepository
+    public class UserRepository(ClanChatDbContext dbContext, UserManager<UserEntity> userManager) : IUserRepository
     {
-        public async Task<UserEntity> GetByUserName(string UserName)
+
+        public async Task<IdentityResult> CreateAsync(UserEntity user, string password)
         {
-            var result = await dbContext.User.FirstOrDefaultAsync(x => x.UserName == UserName);
-            return result;
+            return await userManager.CreateAsync(user, password);
         }
 
-        public Task<Result<AuthResponseDTO>> Register(CreateUserDTO user)
+        public async Task<UserEntity> FindByNameAsync(string username)
         {
-            throw new NotImplementedException();
+            return await userManager.FindByNameAsync(username);
         }
 
-  
+        public async Task<bool> CheckPasswordAsync(UserEntity user, string password)
+        {
+            return await userManager.CheckPasswordAsync(user, password);
+        }
+
     }
 }
