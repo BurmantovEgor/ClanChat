@@ -7,9 +7,9 @@ namespace ClanChat.Abstractions.Message
     public interface IMessageRepository
     {
 
-        Task<List<MessageEntity>> GetLastMessages(int count, Guid clanId);
-        Task<Result> SaveNewMessage(MessageEntity msgEntity);
-        Task<Result<MessageDTO>> GetById(Guid messageId);
+        Task<List<MessageDTO>> GetLastMessages(int count, Guid clanId, Guid userId);
+        Task<int> SaveNewMessage(MessageEntity msgEntity);
+        Task<MessageDTO> GetById(Guid messageId, Guid userId);
 
     }
 }

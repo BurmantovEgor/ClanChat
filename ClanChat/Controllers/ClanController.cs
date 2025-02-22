@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClanChat.Controllers
 {
     [ApiController]
-    [Route("clan")]
+    [Route("api/clan")]
     public class ClanController(IClanService clanService): ControllerBase
     {
         [HttpGet]

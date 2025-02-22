@@ -6,7 +6,7 @@ namespace ClanChat.Abstractions.Message
 {
     public interface IMessageService
     {
-        Task<Result> SendMessage(NewMessageDTO dto);
+        Task<Result> SendMessage(CreateMessageDTO dto);
         Task<Result<List<MessageDTO>>> GetLastMessages(int count);
     }
 }

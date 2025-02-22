@@ -1,6 +1,6 @@
 ﻿namespace ClanChat.Core.DTOs.Message
 {
-    public class NewMessageDTO
+    public class CreateMessageDTO
     {
         public string Message { get; set; }
     }

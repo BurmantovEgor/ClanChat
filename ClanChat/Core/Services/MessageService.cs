@@ -4,51 +4,68 @@ using ClanChat.Core.DTOs.Message;
 using ClanChat.Data.Entities;
 using ClanChat.Helpers;
 using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace ClanChat.Core.Services
 {
-    public class MessageService(IMessageRepository messageRepositor, IHttpContextAccessor _httpContextAccessor
-        ,IMapper mapper,
-        IHubContext<MessageHub> messageHub) : IMessageService
+    public class MessageService : IMessageService
     {
+        private readonly IMessageRepository _messageRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
+        private readonly IHubContext<MessageHub> _messageHub;
+
+        public MessageService(IMessageRepository messageRepository,
+                              IHttpContextAccessor httpContextAccessor,
+                              IMapper mapper,
+                              IHubContext<MessageHub> messageHub)
+        {
+            _messageRepository = messageRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
+            _messageHub = messageHub;
+        }
+
         public async Task<Result<List<MessageDTO>>> GetLastMessages(int count)
         {
             var user = _httpContextAccessor.HttpContext?.User;
-            var result = user?.FindFirst("ClanId")?.Value;
-            var clanGuid = new Guid(result);
-            var result213 = await messageRepositor.GetLastMessages(count, clanGuid);
-            if (result213.Count() == 0) return Result.Failure<List<MessageDTO>>("Empty list");
+            var clanIdClaim = user?.FindFirst("ClanId")?.Value;
+            var currUserId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var msgDtoList = mapper.Map<List<MessageDTO>>(result213);
-
-            return Result.Success(msgDtoList);
+            if (string.IsNullOrEmpty(clanIdClaim)) return Result.Failure<List<MessageDTO>>("Не удалось получить информацию о клане");
+            var clanGuid = new Guid(clanIdClaim);
+            var messages = await _messageRepository.GetLastMessages(count, clanGuid, new Guid(currUserId));
+            if (!messages.Any()) return Result.Failure<List<MessageDTO>>("Нет сообщений для отображения");
+            return Result.Success(messages);
         }
 
-        public async Task<Result> SendMessage(NewMessageDTO dto)
+        public async Task<Result> SendMessage(CreateMessageDTO dto)
         {
             var user = _httpContextAccessor.HttpContext?.User;
-            var clanId = user?.FindFirst("ClanId")?.Value;
-            var clanGuid = new Guid(clanId);
+            var clanIdClaim = user?.FindFirst("ClanId")?.Value;
+            if (string.IsNullOrEmpty(clanIdClaim)) return Result.Failure("Не удалось получить информацию о клане");
 
-            var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userGuid = new Guid(userId);
+            var clanGuid = new Guid(clanIdClaim);
+            var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var messageEntity = mapper.Map<MessageEntity>(dto, opts =>
+            if (string.IsNullOrEmpty(userIdClaim)) return Result.Failure("Не удалось получить информацию о пользователе.");
+            var userGuid = new Guid(userIdClaim);
+
+            var messageEntity = _mapper.Map<MessageEntity>(dto, opts =>
             {
-                opts.Items["UserId"] = userId;
-                opts.Items["ClanId"] = clanId;
+                opts.Items["UserId"] = userIdClaim;
+                opts.Items["ClanId"] = clanIdClaim;
             });
-            var result = await messageRepositor.SaveNewMessage(messageEntity);
-            if (result.IsFailure) return Result.Failure("Не удалось сохранить сообщение");
+            var result = await _messageRepository.SaveNewMessage(messageEntity);
 
-            var currMessage  = await messageRepositor.GetById(messageEntity.Id);
+            if (result == 0) return Result.Failure("Не удалось сохранить сообщение. Пожалуйста, попробуйте позже");
+            var savedMessage = await _messageRepository.GetById(messageEntity.Id, new Guid(userIdClaim));
+            if (savedMessage == null) return Result.Failure("Не удалось получить сохраненное сообщение.");
+            await _messageHub.Clients.Group($"clan-{clanIdClaim}").SendAsync("ReceiveNewMessage", savedMessage);
 
-            await messageHub.Clients.Group($"clan-{clanId}").SendAsync("ReceiveNewMessage", currMessage.Value);
-
-            return result;
+            return Result.Success();
         }
     }
 }

@@ -14,11 +14,11 @@ namespace ClanChat.Helpers
             CreateMap<ClanModel, ClanEntity>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid())).ReverseMap();
             CreateMap<ClanEntity, ClanDTO>();
 
-            CreateMap<UserEntity, AuthResponseDTO>();
-            CreateMap<CreateUserDTO, UserEntity>();
+            CreateMap<UserEntity, AuthUserDTO>();
+            CreateMap<RegisterUserDTO, UserEntity>();
 
 
-            CreateMap<NewMessageDTO, MessageEntity>()
+            CreateMap<CreateMessageDTO, MessageEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
@@ -27,7 +27,8 @@ namespace ClanChat.Helpers
 
 
             CreateMap<UserEntity, UserDTO>();
-            CreateMap<MessageEntity, MessageDTO>();
+            CreateMap<MessageEntity, MessageDTO>()
+           .ForMember(dest => dest.IsOutgoing, opt => opt.Ignore());
 
 
         }

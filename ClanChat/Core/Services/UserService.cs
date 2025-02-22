@@ -10,48 +10,72 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ClanChat.Core.Services
 {
-    public class UserService(IUserRepository userRepository, 
-        UserManager<UserEntity> userManager, 
-        ITokenService tokenService, 
-        IClanService clanService,
-        IMapper mapper) : IUserService
+    public class UserService : IUserService
     {
-        public async Task<Result<AuthResponseDTO>> Login(LoginUserDTO user)
+        private readonly IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IClanService _clanService;
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository userRepository,
+                           ITokenService tokenService,
+                           IClanService clanService,
+                           IMapper mapper)
         {
-            var currentUser = await userRepository.FindByNameAsync(user.UserName);
-            if (currentUser == null)
-                return Result.Failure<AuthResponseDTO>("User with this username doesn't exist.");
-
-            var checkPass = await userRepository.CheckPasswordAsync(currentUser, user.Password);
-            if (!checkPass)
-                return Result.Failure<AuthResponseDTO>("Incorrect Password");
-
-            var authUser = mapper.Map<AuthResponseDTO>(currentUser);
-            authUser.UserToken = tokenService.GenerateJwtToken(currentUser);
-
-            return Result.Success<AuthResponseDTO>(authUser);
+            _userRepository = userRepository;
+            _tokenService = tokenService;
+            _clanService = clanService;
+            _mapper = mapper;
         }
 
-        public async Task<Result<AuthResponseDTO>> Register(CreateUserDTO user)
+        public async Task<Result<AuthUserDTO>> ChangeClan(Guid userId, Guid clanId)
         {
-            var existingUser = await userRepository.FindByNameAsync(user.UserName);
-            if (existingUser != null)
-                return Result.Failure<AuthResponseDTO>("User with this username already exists.");
+            var updResult = await _userRepository.ChangeClan(userId, clanId);
+            if (!updResult.Succeeded) return Result.Failure<AuthUserDTO>(updResult.Errors.First().Description);
 
-            var clan = await clanService.FindByIdAsync(user.ClanId);
-            if (clan.IsFailure)
-                return Result.Failure<AuthResponseDTO>(clan.Error);
+            var newUser = await _userRepository.FindByIdAsync(userId);
+            if (newUser == null) return Result.Failure<AuthUserDTO>("Не удалось получить данные пользователя");
 
-            var user1 = mapper.Map<UserEntity>(user);
-            
-            var result = await userRepository.CreateAsync(user1, user.Password);
+            var userDTO = _mapper.Map<AuthUserDTO>(newUser);
+            userDTO.UserToken = _tokenService.GenerateJwtToken(newUser);
+
+            return Result.Success(userDTO);
+        }
+
+        public async Task<Result<AuthUserDTO>> Login(LoginUserDTO user)
+        {
+            var currentUser = await _userRepository.FindByNameAsync(user.UserName);
+            if (currentUser == null) return Result.Failure<AuthUserDTO>("Пользователь с таким именем не найден");
+
+            var checkPass = await _userRepository.CheckPasswordAsync(currentUser, user.Password);
+            if (!checkPass)  return Result.Failure<AuthUserDTO>("Неверный пароль");
+
+            var authUser = _mapper.Map<AuthUserDTO>(currentUser);
+            authUser.UserToken = _tokenService.GenerateJwtToken(currentUser);
+
+            return Result.Success(authUser);
+        }
+
+        public async Task<Result<AuthUserDTO>> Register(RegisterUserDTO user)
+        {
+            var existingUser = await _userRepository.FindByNameAsync(user.UserName);
+            if (existingUser != null) return Result.Failure<AuthUserDTO>("Пользователь с таким именем уже существует");
+
+            var clan = await _clanService.FindByIdAsync(user.ClanId);
+            if (clan.IsFailure) return Result.Failure<AuthUserDTO>(clan.Error);
+
+            var user1 = _mapper.Map<UserEntity>(user);
+
+            // Создаем нового пользователя
+            var result = await _userRepository.CreateAsync(user1, user.Password);
             if (!result.Succeeded)
-                return Result.Failure<AuthResponseDTO>(result.Errors.First().Description);
+                return Result.Failure<AuthUserDTO>(result.Errors.First().Description);
 
-            var authUser = mapper.Map<AuthResponseDTO>(user1);
-            authUser.UserToken = tokenService.GenerateJwtToken(user1);
+            // Маппим пользователя в DTO и генерируем токен
+            var authUser = _mapper.Map<AuthUserDTO>(user1);
+            authUser.UserToken = _tokenService.GenerateJwtToken(user1);
 
-            return Result.Success<AuthResponseDTO>(authUser);
+            return Result.Success(authUser);
         }
     }
 }

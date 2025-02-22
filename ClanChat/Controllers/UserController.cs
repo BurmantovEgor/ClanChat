@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClanChat.Controllers
 {
     [ApiController]
-    [Route("user")]
+    [Route("api/user")]
     public class UserController(IUserService userService) : ControllerBase
     {
         [HttpPost("register")]
-        public async Task<IActionResult> Register(CreateUserDTO currentUser)
+        public async Task<IActionResult> Register(RegisterUserDTO currentUser)
         {
             var result = await userService.Register(currentUser);
             if (result.IsFailure) return BadRequest(result.Error);
@@ -21,6 +21,14 @@ namespace ClanChat.Controllers
         public async Task<IActionResult> Login(LoginUserDTO currentUser)
         {
             var result = await userService.Login(currentUser);
+            if (result.IsFailure) return BadRequest(result.Error);
+            return Ok(result.Value);
+        }
+
+        [HttpPut("changeClan")]
+        public async Task<IActionResult> ChangeClan(Guid userId, Guid clanId)
+        {
+            var result = await userService.ChangeClan(userId, clanId);
             if (result.IsFailure) return BadRequest(result.Error);
             return Ok(result.Value);
         }

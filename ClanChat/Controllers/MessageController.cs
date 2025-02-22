@@ -12,7 +12,7 @@ namespace ClanChat.Controllers
     public class MessageController(IMessageService messageService) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> SendMessage(NewMessageDTO newMsg)
+        public async Task<IActionResult> SendMessage(CreateMessageDTO newMsg)
         {
             var result = await messageService.SendMessage(newMsg);
             if (result.IsFailure) return BadRequest(result.Error);

@@ -1,37 +1,37 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using ClanChat.Abstractions.Clan;
-using ClanChat.Core.DTOs;
-using ClanChat.Core.Models;
+﻿using ClanChat.Abstractions.Clan;
 using ClanChat.Data.DbConfigurations;
 using ClanChat.Data.Entities;
-using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClanChat.Data.Repositories
 {
-    public class ClanRepository(ClanChatDbContext dbContext) : IClanRepository
+    public class ClanRepository : IClanRepository
     {
-        public async Task<Result> CreateNew(ClanEntity clanModell)
+        ClanChatDbContext _dbContext;
+
+        public ClanRepository(ClanChatDbContext dbContext)
         {
-           await dbContext.Clan.AddAsync(clanModell);
-            var result = await dbContext.SaveChangesAsync();
-            if (result == 0) return Result.Failure("DB Error");
-            return Result.Success();
+            _dbContext = dbContext;
         }
 
-        public async Task<Result<ClanEntity>> FindByIdAsync(Guid clanId)
+        public async Task<int> CreateNew(ClanEntity clanModell)
         {
-            var currClan = await dbContext.Clan.FirstOrDefaultAsync(x => x.Id == clanId);
-            if (currClan == null) return Result.Failure<ClanEntity>("Not found");
-            return Result.Success(currClan);
+            await _dbContext.Clan.AddAsync(clanModell);
+            var result = await _dbContext.SaveChangesAsync();
+            return result;
         }
 
-        public async Task<Result<List<ClanEntity>>> GetAll()
+        public async Task<ClanEntity> FindByIdAsync(Guid clanId)
         {
-            var clans = await dbContext.Clan.ToListAsync();
-            if (clans == null) return Result.Failure<List<ClanEntity>>("DB Error");
-            return Result.Success(clans);
+            var currClan = await _dbContext.Clan
+                .FirstOrDefaultAsync(x => x.Id == clanId);
+            return currClan;
+        }
+
+        public async Task<List<ClanEntity>> GetAll()
+        {
+            var clans = await _dbContext.Clan.ToListAsync();
+            return clans;
         }
     }
 }

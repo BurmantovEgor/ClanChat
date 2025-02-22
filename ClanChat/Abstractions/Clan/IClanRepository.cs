@@ -8,9 +8,9 @@ namespace ClanChat.Abstractions.Clan
 {
     public interface IClanRepository
     {
-        Task<Result<List<ClanEntity>>> GetAll();
-        Task<Result> CreateNew(ClanEntity clanModell);
-        Task<Result<ClanEntity>> FindByIdAsync(Guid clanId);
+        Task<List<ClanEntity>> GetAll();
+        Task<int> CreateNew(ClanEntity clanModell);
+        Task<ClanEntity> FindByIdAsync(Guid clanId);
 
     }
 }

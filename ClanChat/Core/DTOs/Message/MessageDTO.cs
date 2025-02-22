@@ -9,5 +9,6 @@ namespace ClanChat.Core.DTOs.Message
         public UserDTO User { get; set; }
         public DateTime CreatedTime { get; set; }
 
+        public bool IsOutgoing { get; set; }
     }
 }
