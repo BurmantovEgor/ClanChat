@@ -1,0 +1,171 @@
+﻿@page
+@model Client.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+       
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Регистрация</h2>
+
+        <form id="registrationForm">
+            <div>
+                <label for="userName">Логин:</label>
+                <input type="text" id="userName" name="userName" required />
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div>
+                <label for="clanSelect">Выберите клан:</label>
+                <select id="clanSelect" name="clanId" required>
+                </select>
+            </div>
+            <button type="submit">Зарегистрироваться</button>
+            <div class="error" id="errorMessage"></div>
+        </form>
+    </div>
+
+    @section Scripts {
+        <script>
+            async function loadClans() {
+                const response = await fetch("http://localhost:5001/api/clan");
+                const clans = await response.json();
+
+                const clanSelect = document.getElementById("clanSelect");
+                clans.forEach(clan => {
+                    const option = document.createElement("option");
+                    option.value = clan.id;
+                    option.textContent = clan.name;
+                    clanSelect.appendChild(option);
+                });
+            }
+
+            document.getElementById("registrationForm").addEventListener("submit", async function (event) {
+                event.preventDefault(); 
+
+                const userName = document.getElementById("userName").value;
+                const password = document.getElementById("password").value;
+                const clanId = document.getElementById("clanSelect").value;
+
+                const userData = {
+                    userName: userName,
+                    password: password,
+                    clanId: clanId
+                };
+
+                try {
+                    const response = await fetch("http://localhost:5001/api/user/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Ошибка при регистрации");
+                    }
+
+                    const user = await response.json();
+
+                    sessionStorage.setItem("userToken", user.userToken);
+                    sessionStorage.setItem("clanId", user.clanId);
+                    sessionStorage.setItem("userName", user.userName);
+                    sessionStorage.setItem("userId", user.id);
+
+                    window.location.href = `/client`;
+
+                } catch (error) {
+                    document.getElementById("errorMessage").textContent = "Ошибка при регистрации.";
+                }
+            });
+
+            loadClans();
+        </script>
+    }
+
+</body>
+</html>
