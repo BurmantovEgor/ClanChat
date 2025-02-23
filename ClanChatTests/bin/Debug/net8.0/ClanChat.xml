@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClanChat</name>
+    </assembly>
+    <members>
+        <member name="M:ClanChat.Controllers.ClanController.AllClans">
+            <summary>
+            Получить список всех кланов.
+            </summary>
+        </member>
+        <member name="M:ClanChat.Controllers.ClanController.ClanById(System.Guid)">
+            <summary>
+            Получить информацию о клане по его ID.
+            </summary>
+            <param name="clanId">Идентификатор клана.</param>
+        </member>
+        <member name="M:ClanChat.Controllers.ClanController.NewClan(ClanChat.Core.DTOs.Clan.CreateClanDTO)">
+            <summary>
+            Создать новый клан.
+            </summary>
+            <param name="newClan">Данные нового клана.</param>
+        </member>
+        <member name="M:ClanChat.Controllers.MessageController.SendMessage(ClanChat.Core.DTOs.Message.CreateMessageDTO)">
+            <summary>
+            Отправить сообщение в клановый чат.
+            </summary>
+            <param name="newMsg">Данные нового сообщения</param>
+        </member>
+        <member name="M:ClanChat.Controllers.MessageController.LastMessages(System.Int32)">
+            <summary>
+            Получить последние N сообщений в клане.
+            </summary>
+            <param name="messagesCount">Количество сообщений</param>
+        </member>
+        <member name="M:ClanChat.Controllers.UserController.Register(ClanChat.Core.DTOs.User.RegisterUserDTO)">
+            <summary>
+            Регистрация пользователя
+            </summary>
+            <param name="newUser">Данные пользователя для регистрации</param>
+        </member>
+        <member name="M:ClanChat.Controllers.UserController.Login(ClanChat.Core.DTOs.User.LoginUserDTO)">
+            <summary>
+            Авторизация и аутентификация пользователя
+            </summary>
+            <param name="user">Данные авторизации пользователя</param>
+        </member>
+        <member name="M:ClanChat.Controllers.UserController.ChangeClan(System.Guid)">
+            <summary>
+            Изменение клана пользователя
+            </summary>
+            <param name="userId">User ID</param>
+            <param name="clanId">New Clan ID</param>
+        </member>
+        <member name="M:ClanChat.Core.Services.ClanService.CreateNewAsync(ClanChat.Core.DTOs.Clan.CreateClanDTO)">
+            <summary>
+            Создание нового клана
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.ClanService.FindByIdAsync(System.Guid)">
+            <summary>
+            Поиск клана по ID 
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.ClanService.GetAllAsync">
+            <summary>
+            Получение списка всех кланов 
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.MessageService.GetLastMessagesAsync(System.Int32)">
+            <summary>
+            Получение списка последних N сообщений
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.MessageService.SendMessageAsync(ClanChat.Core.DTOs.Message.CreateMessageDTO)">
+            <summary>
+            Сохранение сообщения в БД и отправка в чат
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.MessageService.CheckClanIdClaim(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Проверка наличия валидного ID кана в Claims
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.MessageService.CheckUserIdClaim(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Проверка наличия валидного ID пользоваетя в Claims 
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.TokenService.GenerateJwtToken(ClanChat.Data.Entities.UserEntity)">
+            <summary>
+            Генерация JWT пользователя 
+            В Claims записываем : ID пользователя, UserName и ID клана пользователя
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.UserService.ChangeClanAsync(System.Guid)">
+            <summary>
+            Валидация данных и смена клана текущего пользователя
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.UserService.FindByIdAsync(System.Guid)">
+            <summary>
+            Поиск пользоваеля по ID
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.UserService.LoginAsync(ClanChat.Core.DTOs.User.LoginUserDTO)">
+            <summary>
+            Валидация данных и проверка данных авторизации пользователя в БД 
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.UserService.RegisterAsync(ClanChat.Core.DTOs.User.RegisterUserDTO)">
+            <summary>
+            Валидация данных и сохранения пользователя в БД при регистрации
+            </summary>
+        </member>
+        <member name="M:ClanChat.Core.Services.UserService.CheckUserIdClaim(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Проверка наличия валидного ID пользоваетя в Claims
+            </summary>
+        </member>
+        <member name="T:ClanChat.Migrations.InitialDb">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.InitialDb.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.InitialDb.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.InitialDb.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClanChat.Migrations.UpdateClanTable">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateClanTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateClanTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateClanTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClanChat.Migrations.UpdateUserEntity">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateUserEntity.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateUserEntity.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateUserEntity.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClanChat.Migrations.UpdateMessageEntity">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClanChat.Migrations.UpdateMessageEntity2">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateMessageEntity2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:ClanChat.Migrations.UpdateEntities">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateEntities.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateEntities.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ClanChat.Migrations.UpdateEntities.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
