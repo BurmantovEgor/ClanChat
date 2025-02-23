@@ -16,16 +16,16 @@ namespace ClanChat.Core.Models
             CreatedAt = DateTime.UtcNow;
         }
 
-        public static Result<ClanModel> Create(ClanDTO clanDTO)
+        public static Result<ClanModel> Create(CreateClanDTO clanDTO)
         {
             if (string.IsNullOrWhiteSpace(clanDTO.Name) || clanDTO.Name.Length > 100)
             {
-                return Result.Failure<ClanModel>("Name cannot be empty and must be under 100 characters.");
+                return Result.Failure<ClanModel>("Название не может быть пустым и длиннее 100 символов");
             }
 
             if (string.IsNullOrWhiteSpace(clanDTO.Description) || clanDTO.Description.Length > 500)
             {
-                return Result.Failure<ClanModel>("Description cannot be empty and must be under 500 characters.");
+                return Result.Failure<ClanModel>("Описание не может быть пустым и длиннее 500 символов");
             }
 
             return Result.Success(new ClanModel(clanDTO.Name, clanDTO.Description));

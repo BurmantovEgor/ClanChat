@@ -1,16 +1,14 @@
-﻿using ClanChat.Core.Models;
-using ClanChat.Core.DTOs;
-using CSharpFunctionalExtensions;
+﻿using ClanChat.Core.DTOs.Clan;
 using ClanChat.Data.Entities;
-using ClanChat.Core.DTOs.Clan;
 
 namespace ClanChat.Abstractions.Clan
 {
     public interface IClanRepository
     {
-        Task<List<ClanEntity>> GetAll();
-        Task<int> CreateNew(ClanEntity clanModell);
-        Task<ClanEntity> FindByIdAsync(Guid clanId);
+        Task<List<ClanDTO>> GetAllAsync();
+        Task<int> CreateNewAsync(ClanEntity clanModell);
+        Task<ClanDTO> FindByIdAsync(Guid clanId);
+        Task<ClanDTO> FindByNameAsync(string clanName);
 
     }
 }

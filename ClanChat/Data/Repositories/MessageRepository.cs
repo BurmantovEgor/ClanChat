@@ -6,7 +6,6 @@ using ClanChat.Data.DbConfigurations;
 using ClanChat.Data.Entities;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ClanChat.Data.Repositories
 {
@@ -20,43 +19,34 @@ namespace ClanChat.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task<MessageDTO> GetById(Guid messageId, Guid userId)
+        public async Task<MessageDTO> GetByIdAsync(Guid messageId)
         {
             var result = await _dbContext.Message
-                .Include(m => m.User)
-                .Include(c => c.User.Clan)
+                .Include(m => m.Sender)
+                .Include(c => c.Sender.Clan)
                 .Where(m => m.Id == messageId)
-                .ProjectTo<MessageDTO>(_mapper.ConfigurationProvider, new { CurrentUser = userId })
+                .ProjectTo<MessageDTO>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
-            
-            result.IsOutgoing = result.User.Id == userId;
 
             return result;
         }
 
-        public async Task<List<MessageDTO>> GetLastMessages(int count, Guid clanId, Guid userId)
+        public async Task<List<MessageDTO>> GetLastMessagesAsync(int count, Guid clanId)
         {
             var messages = await _dbContext.Message
-                .Include(m => m.User)
-                .Include(c => c.User.Clan)
+                .Include(m => m.Sender)
+                .Include(c => c.Sender.Clan)
                 .Where(m => m.ClanId == clanId)
                 .OrderByDescending(m => m.CreatedTime)
                 .Take(count)
                 .OrderBy(m => m.CreatedTime)
+                .ProjectTo<MessageDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            var result = messages.Select(m =>
-            {
-                var dto = _mapper.Map<MessageDTO>(m);
-                dto.IsOutgoing = m.UserId == userId;
-                return dto;
-            })
-                .ToList();
-
-            return result;
+            return messages;
         }
 
-        public async Task<int> SaveNewMessage(MessageEntity msgEntity)
+        public async Task<int> SaveNewMessageAsync(MessageEntity msgEntity)
         {
             await _dbContext.Message.AddAsync(msgEntity);
             var result = await _dbContext.SaveChangesAsync();

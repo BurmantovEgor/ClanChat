@@ -39,5 +39,7 @@ namespace ClanChat.Core.Services
 
             return tokenHandler.WriteToken(token);
         }
+
+      
     }
 }

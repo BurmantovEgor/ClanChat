@@ -16,19 +16,16 @@ namespace ClanChat.Helpers
 
             CreateMap<UserEntity, AuthUserDTO>();
             CreateMap<RegisterUserDTO, UserEntity>();
+            CreateMap<UserEntity, UserDTO>();
 
 
             CreateMap<CreateMessageDTO, MessageEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom((src, dest, _, context) => context.Items["UserId"]))
+                .ForMember(dest => dest.SenderId, opt => opt.MapFrom((src, dest, _, context) => context.Items["UserId"]))
                 .ForMember(dest => dest.ClanId, opt => opt.MapFrom((src, dest, _, context) => context.Items["ClanId"]));
-
-
-            CreateMap<UserEntity, UserDTO>();
-            CreateMap<MessageEntity, MessageDTO>()
-           .ForMember(dest => dest.IsOutgoing, opt => opt.Ignore());
+            CreateMap<MessageEntity, MessageDTO>();
 
 
         }

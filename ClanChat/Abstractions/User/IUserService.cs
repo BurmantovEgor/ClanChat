@@ -1,14 +1,15 @@
 ﻿using ClanChat.Core.DTOs.User;
 using ClanChat.Data.Entities;
 using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Identity;
 
 namespace ClanChat.Abstractions.User
 {
     public interface IUserService
     {
-        Task<Result<AuthUserDTO>> Register(RegisterUserDTO user);
-        Task<Result<AuthUserDTO>> Login(LoginUserDTO user);
-        Task<Result<AuthUserDTO>> ChangeClan(Guid userId, Guid clanId);
+        Task<Result<AuthUserDTO>> RegisterAsync(RegisterUserDTO user);
+        Task<Result<AuthUserDTO>> LoginAsync(LoginUserDTO user);
+        Task<Result<AuthUserDTO>> ChangeClanAsync(Guid clanId);
+        Task<Result<UserDTO>> FindByIdAsync(Guid userId);
+
     }
 }

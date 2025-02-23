@@ -6,9 +6,8 @@ namespace ClanChat.Core.DTOs.Message
     {
         public Guid Id { get; set; }
         public string Message { get; set; }
-        public UserDTO User { get; set; }
+        public UserDTO Sender { get; set; }
         public DateTime CreatedTime { get; set; }
 
-        public bool IsOutgoing { get; set; }
     }
 }

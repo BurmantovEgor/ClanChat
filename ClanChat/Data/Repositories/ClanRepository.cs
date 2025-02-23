@@ -1,36 +1,49 @@
-﻿using ClanChat.Abstractions.Clan;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ClanChat.Abstractions.Clan;
+using ClanChat.Core.DTOs.Clan;
 using ClanChat.Data.DbConfigurations;
 using ClanChat.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ClanChat.Data.Repositories
 {
     public class ClanRepository : IClanRepository
     {
         ClanChatDbContext _dbContext;
-
-        public ClanRepository(ClanChatDbContext dbContext)
+        IMapper _mapper;
+        public ClanRepository(ClanChatDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public async Task<int> CreateNew(ClanEntity clanModell)
+        public async Task<int> CreateNewAsync(ClanEntity clanModell)
         {
             await _dbContext.Clan.AddAsync(clanModell);
             var result = await _dbContext.SaveChangesAsync();
             return result;
         }
 
-        public async Task<ClanEntity> FindByIdAsync(Guid clanId)
+        public async Task<ClanDTO> FindByIdAsync(Guid clanId)
         {
-            var currClan = await _dbContext.Clan
+            var currClan = await _dbContext.Clan.ProjectTo<ClanDTO>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == clanId);
             return currClan;
         }
 
-        public async Task<List<ClanEntity>> GetAll()
+        public async Task<ClanDTO> FindByNameAsync(string clanName)
         {
-            var clans = await _dbContext.Clan.ToListAsync();
+            var currClan = await _dbContext.Clan.ProjectTo<ClanDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(x => x.Name == clanName);
+            return currClan;
+        }
+
+        public async Task<List<ClanDTO>> GetAllAsync()
+        {
+            var clans = await _dbContext.Clan.ProjectTo<ClanDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
             return clans;
         }
     }

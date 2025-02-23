@@ -18,33 +18,43 @@ namespace ClanChat.Core.Services
             _clanRepository = clanRepository;
         }
 
-        public async Task<Result<ClanDTO>> CreateNew(ClanDTO clanDTO)
+        public async Task<Result<ClanDTO>> CreateNewAsync(CreateClanDTO clanDTO)
         {
+            var checkClan = _clanRepository.FindByNameAsync(clanDTO.Name);
+            if (checkClan != null) return Result.Failure<ClanDTO>("Клан с таким именем уже существует");
+
             var createClanModel = ClanModel.Create(clanDTO);
-            if (createClanModel.IsFailure) return Result.Failure<ClanDTO>($"Ошибка создания клана: {createClanModel.Error}");
+            if (createClanModel.IsFailure)
+                return Result.Failure<ClanDTO>($"Ошибка при создании клана: {createClanModel.Error}");
 
             var clanEntity = _mapper.Map<ClanEntity>(createClanModel.Value);
-            var result = await _clanRepository.CreateNew(clanEntity);
-            if (result == 0) return Result.Failure<ClanDTO>("Не удалось создать новый клан. Пожалуйста, попробуйте позже.");
 
-            return Result.Success(clanDTO);
+            var creationResult = await _clanRepository.CreateNewAsync(clanEntity);
+            if (creationResult == 0)
+                return Result.Failure<ClanDTO>("Ошибка сохранения в БД");
+
+            var newClan = await FindByIdAsync(clanEntity.Id);
+            return newClan.IsFailure ? Result.Failure<ClanDTO>("Не удалось найти новый клан") : newClan;
         }
 
         public async Task<Result<ClanDTO>> FindByIdAsync(Guid clanId)
         {
-            var result = await _clanRepository.FindByIdAsync(clanId);
-            if (result == null) return Result.Failure<ClanDTO>($"Клан с идентификатором {clanId} не найден.");
-           
-            var currClan = _mapper.Map<ClanDTO>(result);
-            return Result.Success(currClan);
+            var clanEntity = await _clanRepository.FindByIdAsync(clanId);
+            if (clanEntity == null)
+                return Result.Failure<ClanDTO>($"Клан с ID {clanId} не найден");
+
+            var clanDTO = _mapper.Map<ClanDTO>(clanEntity);
+            return Result.Success(clanDTO);
         }
 
-        public async Task<Result<List<ClanEntity>>> GetAll()
+        public async Task<Result<List<ClanDTO>>> GetAllAsync()
         {
-            var result = await _clanRepository.GetAll();
-            if (result.Count == 0) return Result.Failure<List<ClanEntity>>("Не найдено ни одного клана.");
-           
-            return Result.Success(result);
+            var clanEntities = await _clanRepository.GetAllAsync();
+            if (clanEntities.Count == 0)
+                return Result.Failure<List<ClanDTO>>("Кланы не найдены");
+
+            var clanDTOs = _mapper.Map<List<ClanDTO>>(clanEntities);
+            return Result.Success(clanDTOs);
         }
     }
 }

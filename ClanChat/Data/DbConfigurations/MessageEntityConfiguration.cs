@@ -12,9 +12,9 @@ namespace ClanChat.Data.DbConfigurations
             builder.HasKey(m => m.Id);
             builder.Property(m => m.Message).IsRequired().HasMaxLength(500);
             builder.Property(m => m.CreatedTime).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            builder.HasOne(m => m.User)
+            builder.HasOne(m => m.Sender)
                    .WithMany()
-                   .HasForeignKey(m => m.UserId)
+                   .HasForeignKey(m => m.SenderId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<ClanEntity>() 

@@ -1,6 +1,4 @@
-﻿using ClanChat.Core.DTOs.User;
-using ClanChat.Data.Entities;
-using CSharpFunctionalExtensions;
+﻿using ClanChat.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace ClanChat.Abstractions.User

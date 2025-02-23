@@ -1,10 +1,6 @@
 ﻿using ClanChat.Abstractions.User;
-using ClanChat.Core.DTOs.User;
-using ClanChat.Data.DbConfigurations;
 using ClanChat.Data.Entities;
-using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace ClanChat.Data.Repositories
 {
