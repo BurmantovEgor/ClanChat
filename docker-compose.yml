@@ -1,0 +1,48 @@
+
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: ClanChat/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+      - ConnectionStrings__Postgres=Host=clanChat-db;Port=5432;Database=clanChat;Username=postgres;Password=admin
+    depends_on:
+      - clanChat-db
+    networks:
+      - backend
+
+  client-service:
+    build:
+      context: .
+      dockerfile: Client/Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      - ASPNETCORE_URLS=http://+:5002
+    depends_on:
+      - clanChat-db
+      - api-service
+    networks:
+      - backend
+
+  clanChat-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: clanChat
+    volumes:
+      - clanChat-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+
+volumes:
+  clanChat-db-data:
+
+networks:
+  backend:
+    driver: bridge
