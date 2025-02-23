@@ -14,50 +14,49 @@ namespace ClanChat.Controllers
         /// <summary>
         /// Регистрация пользователя
         /// </summary>
-        /// <param name="currentUser">Данные пользователя для регистрации</param>
+        /// <param name="newUser">Данные пользователя для регистрации</param>
         [HttpPost("register")]
         [ProducesResponseType(typeof(AuthUserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO currentUser)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO newUser)
         {
-            var result = await userService.RegisterAsync(currentUser);
+            var createUserResult = await userService.RegisterAsync(newUser);
 
-            if (result.IsFailure)
+            if (createUserResult.IsFailure)
             {
-                if (result.Error == "Пользователь с таким именем уже существует")
-                    return Conflict(new { message = result.Error });
+                if (createUserResult.Error == "Пользователь с таким именем уже существует")
+                    return Conflict(new { message = createUserResult.Error });
 
-                return StatusCode(500, new { message = result.Error });
+                return StatusCode(500, new { message = createUserResult.Error });
             }
 
-            return Ok(result.Value);
+            return Ok(createUserResult.Value);
         }
 
         /// <summary>
         /// Авторизация и аутентификация пользователя
         /// </summary>
-        /// <param name="currentUser">Данные авторизации пользователя</param>
+        /// <param name="user">Данные авторизации пользователя</param>
         [HttpPost("login")]
         [ProducesResponseType(typeof(AuthUserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO currentUser)
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO user)
         {
-            var result = await userService.LoginAsync(currentUser);
-
-            if (result.IsFailure)
+            var loginUserResult = await userService.LoginAsync(user);
+            if (loginUserResult.IsFailure)
             {
-                if (result.Error == "Пользователь не найден")
-                    return NotFound(new { message = result.Error });
+                if (loginUserResult.Error == "Пользователь не найден")
+                    return NotFound(new { message = loginUserResult.Error });
 
-                if (result.Error == "Неверный пароль")
-                    return Unauthorized(new { message = result.Error });
+                if (loginUserResult.Error == "Неверный пароль")
+                    return Unauthorized(new { message = loginUserResult.Error });
 
-                return StatusCode(500, new { message = result.Error });
+                return StatusCode(500, new { message = loginUserResult.Error });
             }
-            return Ok(result.Value);
+            return Ok(loginUserResult.Value);
         }
 
         /// <summary>
@@ -72,15 +71,15 @@ namespace ClanChat.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangeClan([FromQuery] Guid clanId)
         {
-            var result = await userService.ChangeClanAsync(clanId);
-            if (result.IsFailure)
+            var changeClanResult = await userService.ChangeClanAsync(clanId);
+            if (changeClanResult.IsFailure)
             {
-                if (result.Error == "Пользователь не найден")
-                    return NotFound(new { message = result.Error });
+                if (changeClanResult.Error == "Пользователь не найден")
+                    return NotFound(new { message = changeClanResult.Error });
 
-                return StatusCode(500, new { message = result.Error });
+                return StatusCode(500, new { message = changeClanResult.Error });
             }
-            return Ok(result.Value);
+            return Ok(changeClanResult.Value);
         }
     }
 }

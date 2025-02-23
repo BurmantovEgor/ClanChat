@@ -21,32 +21,31 @@ namespace ClanChat.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SendMessage([FromBody] CreateMessageDTO newMsg)
         {
-            var result = await messageService.SendMessageAsync(newMsg);
-            if (result.IsFailure) return BadRequest(new { message = result.Error });
-
+            var senMessageResult = await messageService.SendMessageAsync(newMsg);
+            if (senMessageResult.IsFailure) return BadRequest(new { message = senMessageResult.Error });
             return Ok(new { message = "Сообщение успешно отправлено" });
         }
 
         /// <summary>
         /// Получить последние N сообщений в клане.
         /// </summary>
-        /// <param name="count">Количество сообщений</param>
+        /// <param name="messagesCount">Количество сообщений</param>
         [HttpGet("lastMessages/{count}")]
         [ProducesResponseType(typeof(List<MessageDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> LastMessages(int count)
+        public async Task<IActionResult> LastMessages(int messagesCount)
         {
-            if (count <= 0) return BadRequest(new { message = "Кол-во сообщений должно быть больше 0" });
+            if (messagesCount <= 0) return BadRequest(new { message = "Кол-во сообщений должно быть больше 0" });
 
-            var result = await messageService.GetLastMessagesAsync(count);
-            if (result.IsFailure)
+            var getMessagesResult = await messageService.GetLastMessagesAsync(messagesCount);
+            if (getMessagesResult.IsFailure)
             {
-                if (result.Error == "Сообщения не найдены") return NotFound(new { message = result.Error });
-                return BadRequest(new { message = result.Error });
+                if (getMessagesResult.Error == "Сообщения не найдены") return NotFound(new { message = getMessagesResult.Error });
+                return BadRequest(new { message = getMessagesResult.Error });
             }
-            return Ok(result.Value);
+            return Ok(getMessagesResult.Value);
         }
     }
 }

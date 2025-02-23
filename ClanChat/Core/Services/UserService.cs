@@ -31,13 +31,16 @@ namespace ClanChat.Core.Services
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Валидация данных и смена клана текущего пользователя
+        /// </summary>
         public async Task<Result<AuthUserDTO>> ChangeClanAsync(Guid clanId)
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-            var userGuid = await CheckUserIdClaim(user);
+            var userClaim = _httpContextAccessor.HttpContext?.User;
+            var userGuid = await CheckUserIdClaim(userClaim);
             if (userGuid.IsFailure) return Result.Failure<AuthUserDTO>(userGuid.Error);
 
-            var updResult = await _userRepository.ChangeClan(userGuid.Value, clanId);
+            var updResult = await _userRepository.ChangeClanAsync(userGuid.Value, clanId);
             if (!updResult.Succeeded) return Result.Failure<AuthUserDTO>(updResult.Errors.First().Description);
 
             var newUser = await _userRepository.FindByIdAsync(userGuid.Value);
@@ -50,23 +53,27 @@ namespace ClanChat.Core.Services
         }
 
 
-
+        /// <summary>
+        /// Поиск пользоваеля по ID
+        /// </summary>
         public async Task<Result<UserDTO>> FindByIdAsync(Guid userId)
         {
-            var result = await _userRepository.FindByIdAsync(userId);
-            if (result == null) return Result.Failure<UserDTO>("Пользователь не найден");
-            var userDto = _mapper.Map<UserDTO>(result);
+            var userEntity = await _userRepository.FindByIdAsync(userId);
+            if (userEntity == null) return Result.Failure<UserDTO>("Пользователь не найден");
+            var userDto = _mapper.Map<UserDTO>(userEntity);
             return Result.Success(userDto);
         }
 
-
+        /// <summary>
+        /// Валидация данных и проверка данных авторизации пользователя в БД 
+        /// </summary>
         public async Task<Result<AuthUserDTO>> LoginAsync(LoginUserDTO user)
         {
             var currentUser = await _userRepository.FindByNameAsync(user.UserName);
             if (currentUser == null) return Result.Failure<AuthUserDTO>("Пользователь не найден");
 
-            var checkPass = await _userRepository.CheckPasswordAsync(currentUser, user.Password);
-            if (!checkPass)  return Result.Failure<AuthUserDTO>("Неверный пароль");
+            var checkPassword = await _userRepository.CheckPasswordAsync(currentUser, user.Password);
+            if (!checkPassword)  return Result.Failure<AuthUserDTO>("Неверный пароль");
 
             var authUser = _mapper.Map<AuthUserDTO>(currentUser);
             authUser.UserToken = _tokenService.GenerateJwtToken(currentUser);
@@ -74,26 +81,32 @@ namespace ClanChat.Core.Services
             return Result.Success(authUser);
         }
 
+        /// <summary>
+        /// Валидация данных и сохранения пользователя в БД при регистрации
+        /// </summary>
         public async Task<Result<AuthUserDTO>> RegisterAsync(RegisterUserDTO user)
         {
             var existingUser = await _userRepository.FindByNameAsync(user.UserName);
             if (existingUser != null) return Result.Failure<AuthUserDTO>("Пользователь с таким именем уже существует");
 
-            var clan = await _clanService.FindByIdAsync(user.ClanId);
-            if (clan.IsFailure) return Result.Failure<AuthUserDTO>("Клан не найден");
+            var clanCheck = await _clanService.FindByIdAsync(user.ClanId);
+            if (clanCheck.IsFailure) return Result.Failure<AuthUserDTO>("Клан не найден");
 
-            var user1 = _mapper.Map<UserEntity>(user);
+            var userEntity = _mapper.Map<UserEntity>(user);
 
-            var result = await _userRepository.CreateAsync(user1, user.Password);
-            if (!result.Succeeded)
-                return Result.Failure<AuthUserDTO>(result.Errors.First().Description);
+            var userCreationResult = await _userRepository.CreateAsync(userEntity, user.Password);
+            if (!userCreationResult.Succeeded)
+                return Result.Failure<AuthUserDTO>(userCreationResult.Errors.First().Description);
 
-            var authUser = _mapper.Map<AuthUserDTO>(user1);
-            authUser.UserToken = _tokenService.GenerateJwtToken(user1);
+            var authUser = _mapper.Map<AuthUserDTO>(userEntity);
+            authUser.UserToken = _tokenService.GenerateJwtToken(userEntity);
 
             return Result.Success(authUser);
         }
 
+        /// <summary>
+        /// Проверка наличия валидного ID пользоваетя в Claims
+        /// </summary>
         private async Task<Result<Guid>> CheckUserIdClaim(ClaimsPrincipal user)
         {
             var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;

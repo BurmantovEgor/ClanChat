@@ -18,16 +18,19 @@ namespace ClanChat.Core.Services
             _clanRepository = clanRepository;
         }
 
-        public async Task<Result<ClanDTO>> CreateNewAsync(CreateClanDTO clanDTO)
+        /// <summary>
+        /// Создание нового клана
+        /// </summary>
+        public async Task<Result<ClanDTO>> CreateNewAsync(CreateClanDTO newClanDTO)
         {
-            var checkClan = _clanRepository.FindByNameAsync(clanDTO.Name);
-            if (checkClan != null) return Result.Failure<ClanDTO>("Клан с таким именем уже существует");
+            var checkClanName = await _clanRepository.FindByNameAsync(newClanDTO.Name);
+            if (checkClanName != null) return Result.Failure<ClanDTO>("Клан с таким именем уже существует");
 
-            var createClanModel = ClanModel.Create(clanDTO);
-            if (createClanModel.IsFailure)
-                return Result.Failure<ClanDTO>($"Ошибка при создании клана: {createClanModel.Error}");
+            var createdClanModel = ClanModel.Create(newClanDTO);
+            if (createdClanModel.IsFailure)
+                return Result.Failure<ClanDTO>($"Ошибка при создании клана: {createdClanModel.Error}");
 
-            var clanEntity = _mapper.Map<ClanEntity>(createClanModel.Value);
+            var clanEntity = _mapper.Map<ClanEntity>(createdClanModel.Value);
 
             var creationResult = await _clanRepository.CreateNewAsync(clanEntity);
             if (creationResult == 0)
@@ -37,23 +40,27 @@ namespace ClanChat.Core.Services
             return newClan.IsFailure ? Result.Failure<ClanDTO>("Не удалось найти новый клан") : newClan;
         }
 
+        /// <summary>
+        /// Поиск клана по ID 
+        /// </summary>
         public async Task<Result<ClanDTO>> FindByIdAsync(Guid clanId)
         {
-            var clanEntity = await _clanRepository.FindByIdAsync(clanId);
-            if (clanEntity == null)
+            var clanDTO = await _clanRepository.FindByIdAsync(clanId);
+            if (clanDTO == null)
                 return Result.Failure<ClanDTO>($"Клан с ID {clanId} не найден");
 
-            var clanDTO = _mapper.Map<ClanDTO>(clanEntity);
             return Result.Success(clanDTO);
         }
 
+        /// <summary>
+        /// Получение списка всех кланов 
+        /// </summary>
         public async Task<Result<List<ClanDTO>>> GetAllAsync()
         {
-            var clanEntities = await _clanRepository.GetAllAsync();
-            if (clanEntities.Count == 0)
+            var clanDTOs = await _clanRepository.GetAllAsync();
+            if (clanDTOs.Count == 0)
                 return Result.Failure<List<ClanDTO>>("Кланы не найдены");
 
-            var clanDTOs = _mapper.Map<List<ClanDTO>>(clanEntities);
             return Result.Success(clanDTOs);
         }
     }

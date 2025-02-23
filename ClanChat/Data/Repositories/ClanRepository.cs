@@ -19,9 +19,9 @@ namespace ClanChat.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task<int> CreateNewAsync(ClanEntity clanModell)
+        public async Task<int> CreateNewAsync(ClanEntity clanModel)
         {
-            await _dbContext.Clan.AddAsync(clanModell);
+            await _dbContext.Clan.AddAsync(clanModel);
             var result = await _dbContext.SaveChangesAsync();
             return result;
         }

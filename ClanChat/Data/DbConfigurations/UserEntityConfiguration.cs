@@ -15,10 +15,6 @@ namespace ClanChat.Data.DbConfigurations
                 .WithMany() 
                 .HasForeignKey(u => u.ClanId)
                 .OnDelete(DeleteBehavior.Cascade); 
-
-
-
-
         }
     }
 }

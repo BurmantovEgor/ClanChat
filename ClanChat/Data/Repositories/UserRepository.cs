@@ -31,7 +31,7 @@ namespace ClanChat.Data.Repositories
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task<IdentityResult> ChangeClan(Guid userId, Guid clanId)
+        public async Task<IdentityResult> ChangeClanAsync(Guid userId, Guid clanId)
         {
             var result = await _userManager.FindByIdAsync(userId.ToString());
             result.ClanId = clanId;

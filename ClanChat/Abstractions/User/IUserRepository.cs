@@ -8,7 +8,7 @@ namespace ClanChat.Abstractions.User
         Task<UserEntity> FindByNameAsync(string username);
         Task<bool> CheckPasswordAsync(UserEntity user, string password);
         Task<IdentityResult> CreateAsync(UserEntity user, string password);
-        Task<IdentityResult> ChangeClan(Guid userId, Guid clanId);
+        Task<IdentityResult> ChangeClanAsync(Guid userId, Guid clanId);
         Task<UserEntity> FindByIdAsync(Guid userId);
     }
 }

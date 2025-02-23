@@ -17,15 +17,15 @@ namespace ClanChat.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet]
-        [ProducesResponseType((typeof(List<ClanDTO>)),StatusCodes.Status200OK)]
+        [ProducesResponseType((typeof(List<ClanDTO>)), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AllClans()
         {
-            var result = await clanService.GetAllAsync();
-            if (result.IsFailure) return NotFound(new { message = result.Error });
+            var getClansResult = await clanService.GetAllAsync();
+            if (getClansResult.IsFailure) return NotFound(new { message = getClansResult.Error });
 
-            return Ok(result.Value);
+            return Ok(getClansResult.Value);
         }
 
         /// <summary>
@@ -33,16 +33,16 @@ namespace ClanChat.Controllers
         /// </summary>
         /// <param name="clanId">Идентификатор клана.</param>
         [HttpGet("id/{clanId}")]
-        [ProducesResponseType((typeof(ClanDTO)),StatusCodes.Status200OK)]
+        [ProducesResponseType((typeof(ClanDTO)), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ClanById(Guid clanId)
         {
-            var result = await clanService.FindByIdAsync(clanId);
-            if (result.IsFailure) return NotFound(new { message = result.Error });
+            var findClanResult = await clanService.FindByIdAsync(clanId);
+            if (findClanResult.IsFailure) return NotFound(new { message = findClanResult.Error });
 
-            return Ok(result.Value);
+            return Ok(findClanResult.Value);
         }
 
         /// <summary>
@@ -50,24 +50,22 @@ namespace ClanChat.Controllers
         /// </summary>
         /// <param name="newClan">Данные нового клана.</param>
         [HttpPost]
-        [ProducesResponseType((typeof(ClanDTO)),StatusCodes.Status201Created)]
+        [ProducesResponseType((typeof(ClanDTO)), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> NewClan([FromBody] CreateClanDTO newClan)
         {
-                       var result = await clanService.CreateNewAsync(newClan);
-
-            if (result.IsFailure)
+            var createClanResult = await clanService.CreateNewAsync(newClan);
+            if (createClanResult.IsFailure)
             {
-                if (result.Error == "Clan is already exists")
-                    return Conflict(new { message = result.Error });
+                if (createClanResult.Error == "Clan is already exists")
+                    return Conflict(new { message = createClanResult.Error });
 
-                return StatusCode(500, new { message = result.Error });
+                return StatusCode(500, new { message = createClanResult.Error });
             }
-
-            return Created(nameof(ClanById), result.Value);
+            return Created(nameof(ClanById), createClanResult.Value);
         }
     }
 }

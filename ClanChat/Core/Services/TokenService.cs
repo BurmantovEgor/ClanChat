@@ -15,6 +15,10 @@ namespace ClanChat.Core.Services
         {
             _configuration = configuration;
         }
+        /// <summary>
+        /// Генерация JWT пользователя 
+        /// В Claims записываем : ID пользователя, UserName и ID клана пользователя
+        /// </summary>
         public string GenerateJwtToken(UserEntity user)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
@@ -39,7 +43,5 @@ namespace ClanChat.Core.Services
 
             return tokenHandler.WriteToken(token);
         }
-
-      
     }
 }
