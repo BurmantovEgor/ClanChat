@@ -30,7 +30,7 @@ namespace ClanChat.Controllers
         /// Получить последние N сообщений в клане.
         /// </summary>
         /// <param name="messagesCount">Количество сообщений</param>
-        [HttpGet("lastMessages/{count}")]
+        [HttpGet("lastMessages/{messagesCount}")]
         [ProducesResponseType(typeof(List<MessageDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
