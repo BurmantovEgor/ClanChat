@@ -112,6 +112,7 @@
         <script>
             async function loadClans() {
                 const response = await fetch("http://localhost:5001/api/clan");
+             //   const response = await fetch("http://localhost:5093/api/clan");
                 const clans = await response.json();
 
                 const clanSelect = document.getElementById("clanSelect");
@@ -138,6 +139,7 @@
 
                 try {
                     const response = await fetch("http://localhost:5001/api/user/register", {
+                   // const response = await fetch("http://localhost:5093/api/user/register", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

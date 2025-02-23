@@ -6,18 +6,15 @@
 
 <h2>Список сообщений</h2>
 
-<!-- Отображаем информацию о пользователе -->
 <div id="userInfo">
 	<p><strong>Никнейм:</strong> <span id="userName"></span></p>
 	<p><strong>Клан:</strong> <span id="clanId"></span></p>
 </div>
 
-<!-- Окошко с прокручиваемыми сообщениями -->
 <div id="messagesContainer">
 	<div id="messagesList"></div>
 </div>
 
-<!-- Форма для отправки сообщений -->
 <div id="messageForm">
 	<h3>Отправить сообщение</h3>
 	<input type="text" id="messageInput" placeholder="Введите сообщение..." />
@@ -45,6 +42,7 @@
 				document.getElementById("clanId").textContent = clanId;
 
 						function loadClans() {
+				//	fetch("http://localhost:5001/api/clan", {
 					fetch("http://localhost:5001/api/clan", {
 						method: "GET",
 						headers: {
@@ -87,7 +85,8 @@
 						return;
 					}
 
-					fetch(`http://localhost:5001/api/user/changeClan?userId=${userId}&clanId=${newClanId}`, {
+					//fetch(`http://localhost:5093/api/user/changeClan?clanId=${newClanId}`, {
+					fetch(`http://localhost:5001/api/user/changeClan?clanId=${newClanId}`, {
 						method: "PUT",
 						headers: {
 							"Authorization": `Bearer ${userToken}`
@@ -130,6 +129,7 @@
 			const userToken = sessionStorage.getItem("userToken");
 
 			fetch(`http://localhost:5001/api/clan/id/${clanId}`, {
+			//fetch(`http://localhost:5093/api/clan/id/${clanId}`, {
 				method: "GET",
 				headers: {
 					"Authorization": `Bearer ${userToken}`
@@ -181,6 +181,7 @@
 			const currentUserId = sessionStorage.getItem("userId");
 
 			fetch("http://localhost:5001/api/message/lastMessages/50", {
+		//	fetch("http://localhost:5093/api/message/lastMessages/50", {
 				method: "GET",
 				headers: {
 					"Authorization": `Bearer ${userToken}`
@@ -202,6 +203,7 @@
 
 				const connection = new signalR.HubConnectionBuilder()
 					.withUrl("http://localhost:5001/messageHub")
+				//	.withUrl("http://localhost:5093/messageHub")
 					.build();
 
 				connection.start().then(function () {
@@ -231,6 +233,7 @@
 					}
 
 					fetch("http://localhost:5001/api/message", {
+				//	fetch("http://localhost:5093/api/message", {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
