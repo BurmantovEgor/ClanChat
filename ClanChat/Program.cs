@@ -81,18 +81,20 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5002")
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials();  
+              .AllowCredentials();
 
-});
+    });
 });
 
-builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>(options => {
-options.Password.RequireDigit = false;          
-options.Password.RequireLowercase = false;     
-options.Password.RequireUppercase = false;       
-options.Password.RequireNonAlphanumeric = false; 
-options.Password.RequiredLength = 1;            
-options.Password.RequiredUniqueChars = 1;       })
+builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequiredUniqueChars = 1;
+})
     .AddEntityFrameworkStores<ClanChatDbContext>()
     ;
 
@@ -113,11 +115,10 @@ builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -130,7 +131,7 @@ app.UseRouting();
 app.MapHub<MessageHub>("/messageHub");
 
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 
 app.UseAuthorization();
 
