@@ -71,59 +71,59 @@
 						alert("Не удалось загрузить список кланов.");
 					});
 				}
+				let currentClanId = clanId;
 
-				function changeClan() {
+						function changeClan() {
+			const newClanId = document.getElementById("clanSelect").value;
+			const userId = sessionStorage.getItem("userId");
 
-					const newClanId = document.getElementById("clanSelect").value;
-					const userId = sessionStorage.getItem("userId");
+			if (!userId || !newClanId) {
+				alert("Ошибка: нет данных о пользователе или клане.");
+				return;
+			}
 
-					console.error("userId ", userId);
-					console.error("newClanId ", newClanId);
+			if (newClanId !== currentClanId) {
+				console.log("Изменение клана...");
 
-					if (!userId || !newClanId) {
-						alert("Ошибка: нет данных о пользователе или клане.");
-						return;
-					}
+				connection.invoke("LeaveGroup", `clan-${currentClanId}`).catch(function (err) {
+					console.error("Ошибка при выходе из группы:", err.toString());
+				});
 
-					//fetch(`http://localhost:5093/api/user/changeClan?clanId=${newClanId}`, {
-					fetch(`http://localhost:5001/api/user/changeClan?clanId=${newClanId}`, {
-						method: "PUT",
-						headers: {
-							"Authorization": `Bearer ${userToken}`
-						}
-					})
-					.then(response => {
-						if (!response.ok) {
-							throw new Error("Ошибка смены клана");
-						}
-						return response.json(); 
-					})
-					.then(user => { 
-						sessionStorage.setItem("userName", user.userName);
-						sessionStorage.setItem("userToken", user.userToken);
-						sessionStorage.setItem("clanId", user.clanId);
-						sessionStorage.setItem("userId", user.id);
+				connection.invoke("JoinGroup", `clan-${newClanId}`).catch(function (err) {
+					console.error("Ошибка при подключении к новой группе:", err.toString());
+				});
 
-						loadClanInfo(user.clanId);
+				currentClanId = newClanId; 
+			}
 
-						document.getElementById("clanId").textContent = user.clanId;
-
-						 connection.invoke("LeaveGroup", `clan-${clanId}`).catch(function (err) {
-							console.error("Ошибка при выходе из группы:", err.toString());
-						});
-
-						connection.invoke("JoinGroup", `clan-${newClanId}`).catch(function (err) {
-							console.error("Ошибка при подключении к новой группе:", err.toString());
-						});
-
-
-						loadLastMessages();
-					})
-					.catch(error => {
-						console.error("Ошибка при смене клана:", error);
-						alert("Не удалось сменить клан.");
-					});
+			fetch(`http://localhost:5001/api/user/changeClan?clanId=${newClanId}`, {
+				method: "PUT",
+				headers: {
+					"Authorization": `Bearer ${userToken}`
 				}
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error("Ошибка смены клана");
+				}
+				return response.json();
+			})
+			.then(user => {
+				sessionStorage.setItem("userName", user.userName);
+				sessionStorage.setItem("userToken", user.userToken);
+				sessionStorage.setItem("clanId", user.clanId);
+				sessionStorage.setItem("userId", user.id);
+
+				loadClanInfo(user.clanId);
+				document.getElementById("clanId").textContent = user.clanId;
+
+				loadLastMessages();
+			})
+			.catch(error => {
+				console.error("Ошибка при смене клана:", error);
+				alert("Не удалось сменить клан.");
+			});
+		}
 
 						function loadClanInfo(clanId) {
 			const userToken = sessionStorage.getItem("userToken");
