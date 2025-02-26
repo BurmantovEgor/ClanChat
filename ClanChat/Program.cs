@@ -64,6 +64,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["JwtSettings:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/messageHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddDbContext<ClanChatDbContext>(options =>
@@ -128,13 +143,13 @@ using (var scope = app.Services.CreateScope())
 }
 app.UseCors("AllowLocalhost");
 app.UseRouting();
-app.MapHub<MessageHub>("/messageHub");
+
 
 
 app.UseAuthentication();
 
 app.UseAuthorization();
-
+app.MapHub<MessageHub>("/messageHub");
 app.MapControllers();
 
 app.Run();

@@ -11,7 +11,7 @@ namespace ClanChat.Controllers
     [Route("api/message")]
     public class MessageController(IMessageService messageService) : ControllerBase
     {
-        /// <summary>
+        /*/// <summary>
         /// Отправить сообщение в клановый чат.
         /// </summary>
         /// <param name="newMsg">Данные нового сообщения</param>
@@ -21,10 +21,10 @@ namespace ClanChat.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SendMessage([FromBody] CreateMessageDTO newMsg)
         {
-            var senMessageResult = await messageService.SendMessageAsync(newMsg);
-            if (senMessageResult.IsFailure) return BadRequest(new { message = senMessageResult.Error });
+           *//* var senMessageResult = await messageService.SendMessageAsync(newMsg);
+            if (senMessageResult.IsFailure) return BadRequest(new { message = senMessageResult.Error });*//*
             return Ok(new { message = "Сообщение успешно отправлено" });
-        }
+        }*/
 
         /// <summary>
         /// Получить последние N сообщений в клане.

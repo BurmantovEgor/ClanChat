@@ -55,10 +55,8 @@ namespace ClanChat.Core.Services
         /// <summary>
         /// Сохранение сообщения в БД и отправка в чат
         /// </summary>
-        public async Task<Result> SendMessageAsync(CreateMessageDTO newMessageDTO)
+        public async Task<Result> SendMessageAsync(ClaimsPrincipal userClaim ,CreateMessageDTO newMessageDTO)
         {
-            var userClaim = _httpContextAccessor.HttpContext?.User;
-
             var clanGuid = await CheckClanIdClaim(userClaim);
             if (clanGuid.IsFailure) return Result.Failure<List<MessageDTO>>(clanGuid.Error);
 

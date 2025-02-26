@@ -1,19 +1,15 @@
-# User-specific files
 .vs/
 .vscode/
 .idea/
 
-# Windows Installer files
 *.cab
 *.msi
 *.msm
 *.msp
 
-# Windows Installer logs
 *.cab
 *.log
 
-# Build results
 [Dd]ebug/
 [Dd]ebugPublic/
 [Dd]Release/
@@ -22,12 +18,10 @@
 bin/
 obj/
 
-# User-specific files
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 /ClanChatTests
